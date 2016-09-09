@@ -34,6 +34,9 @@
 			struct v2f
 			{
 				float2 uv : TEXCOORD0;
+				float4 position : TEXCOORD1;
+	            float3 normal : NORMAL;
+
 				float4 vertex : SV_POSITION;
 	            fixed4 color : COLOR;
 			};
@@ -59,10 +62,15 @@
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.vertex = float4( (v.texcoord.x -0.5 )  , (-v.texcoord.y +0.5)  , 0.0 , 0.5 );
 
+				/*
 				o.color.x = calculateLightEffect( _LightA.xyz , position.xyz , normal, _LightA.w , 1.0 );
 				o.color.y = 0.0;
 				o.color.z = 0.0;
 				o.color.w = 1.0;
+				*/
+
+				o.position = position;
+	            o.normal = normal;
 				
 				// o.color.xy = v.texcoord;
 				return o;
@@ -72,6 +80,9 @@
 			{
 				// sample the texture
 				fixed4 addCol = i.color;
+				addCol.r = calculateLightEffect( _LightA.xyz , i.position.xyz , i.normal, _LightA.w , 1.0 );
+				addCol.g = 0.0;
+				addCol.b = 0.0;
 				return addCol;
 			}
 			ENDCG
