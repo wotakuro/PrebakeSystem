@@ -23,12 +23,14 @@
 			{
 				float4 vertex : POSITION;
 				float2 uv : TEXCOORD0;
+				float2 uv2 : TEXCOORD1;
 	            float3 normal : NORMAL;
 			};
 
 			struct v2f
 			{
 				float2 uv : TEXCOORD0;
+				float2 uv2 : TEXCOORD1;
 				float4 vertex : SV_POSITION;
 	            fixed4 color : COLOR;
 			};
@@ -42,6 +44,7 @@
 				o.color.xyz = UnityObjectToWorldNormal( v.normal ) * 0.5 + 0.5;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.uv2 = TRANSFORM_TEX(v.uv2, _MainTex);
 				return o;
 			}
 			
@@ -53,7 +56,7 @@
 				col.g = 0.0;
 				col.r = 0.0;
 				col.b = 0.0;
-				col.xy =  i.uv;
+				col.xy =  i.uv2;
 				return col;
 			}
 			ENDCG

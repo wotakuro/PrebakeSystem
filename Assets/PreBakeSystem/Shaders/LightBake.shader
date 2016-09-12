@@ -28,13 +28,14 @@
 			{
 				float4 vertex : POSITION;
 				float2 texcoord : TEXCOORD0;
+				float2 texcoord1 : TEXCOORD1;
 	            float3 normal : NORMAL;
 			};
 
 			struct v2f
 			{
-				float2 uv : TEXCOORD0;
-				float4 position : TEXCOORD1;
+				float2 uv : TEXCOORD0; // テクスチャのUV座標
+				float4 position : TEXCOORD1; // world座標入れ先
 	            float3 normal : NORMAL;
 
 				float4 vertex : SV_POSITION;
@@ -60,14 +61,7 @@
 				float3 normal   = UnityObjectToWorldNormal( v.normal );
 				float4 position = mul (_Object2World, v.vertex);
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-				o.vertex = float4( (v.texcoord.x -0.5 )  , (-v.texcoord.y +0.5)  , 0.0 , 0.5 );
-
-				/*
-				o.color.x = calculateLightEffect( _LightA.xyz , position.xyz , normal, _LightA.w , 1.0 );
-				o.color.y = 0.0;
-				o.color.z = 0.0;
-				o.color.w = 1.0;
-				*/
+				o.vertex = float4( (v.texcoord1.x -0.5 )  , (-v.texcoord1.y +0.5)  , 0.0 , 0.5 );
 
 				o.position = position;
 	            o.normal = normal;
