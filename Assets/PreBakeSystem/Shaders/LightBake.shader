@@ -28,7 +28,7 @@
 			{
 				float4 vertex : POSITION;
 				float2 texcoord : TEXCOORD0;
-				float2 texcoord1 : TEXCOORD1;
+				float2 writeToUv : TEXCOORD1;
 	            float3 normal : NORMAL;
 			};
 
@@ -61,7 +61,9 @@
 				float3 normal   = UnityObjectToWorldNormal( v.normal );
 				float4 position = mul (_Object2World, v.vertex);
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-				o.vertex = float4( (v.texcoord1.x -0.5 )  , (-v.texcoord1.y +0.5)  , 0.0 , 0.5 );
+				
+				// UV2に書き込みます
+				o.vertex = float4( (v.writeToUv.x -0.5 )  , (-v.writeToUv.y +0.5)  , 0.0 , 0.5 );
 
 				o.position = position;
 	            o.normal = normal;
