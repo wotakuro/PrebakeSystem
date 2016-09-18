@@ -50,6 +50,7 @@
 				float3 lightVec =  lightPos - vert;
 				half len = length( lightVec );
 				half param = saturate((lightDist - len) / lightDist );
+				param = ( param * param ) * lightIdentity * 0.5;
 				half normalParam = dot( normalize( lightVec ) , normalize( normal) ) * 0.5 ;
 				return saturate( normalParam * param );
 			}
