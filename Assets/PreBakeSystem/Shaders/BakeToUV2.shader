@@ -1,4 +1,4 @@
-﻿Shader "Unlit/LightBake"
+﻿Shader "LightBake/BakeToUV2"
 {
 	Properties
 	{
@@ -30,16 +30,14 @@
 				float2 texcoord : TEXCOORD0;
 				float2 writeToUv : TEXCOORD1;
 	            float3 normal : NORMAL;
+	            fixed4 color : COLOR;
 			};
 
 			struct v2f
 			{
-				float2 uv : TEXCOORD0; // テクスチャのUV座標
-				float4 position : TEXCOORD1; // world座標入れ先
+				float4 position : TEXCOORD0; // world座標入れ先
 	            float3 normal : NORMAL;
-
 				float4 vertex : SV_POSITION;
-	            fixed4 color : COLOR;
 			};
 
 			float4 _MainTex_ST;
@@ -58,27 +56,28 @@
 			v2f vert (appdata v)
 			{
 				v2f o;
-				float3 normal   = UnityObjectToWorldNormal( v.normal );
+				float4 nvec   = mul (_Object2World, float4(v.normal,0.0) );
 				float4 position = mul (_Object2World, v.vertex);
-				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				
 				// UV2に書き込みます
 				o.vertex = float4( (v.writeToUv.x -0.5 )  , (-v.writeToUv.y +0.5)  , 0.0 , 0.5 );
-
 				o.position = position;
-	            o.normal = normal;
-				
-				// o.color.xy = v.texcoord;
+
+	            o.normal = nvec.xyz;
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 addCol = i.color;
-				addCol.r = calculateLightEffect( _LightA.xyz , i.position.xyz , i.normal, _LightA.w , 1.0 );
+				float4 addCol = float4(0,0,0,0);
+				
+				addCol.r = calculateLightEffect( _LightA.xyz , i.position.xyz , i.normal, _LightA.w , _LightParam.x );
 				addCol.g = 0.0;
 				addCol.b = 0.0;
+				addCol.a = 1.0;
+
+				//addCol = i.color;
 				return addCol;
 			}
 			ENDCG
