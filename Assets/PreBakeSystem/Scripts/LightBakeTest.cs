@@ -17,7 +17,6 @@ public class LightBakeTest : MonoBehaviour {
         target = new RenderTexture(512, 512, 0 ,RenderTextureFormat.ARGB32);
         target.Create();
         Graphics.SetRenderTarget(target);
-        GL.Clear(true, true, new Color(0, 0, 0, 0));
         Graphics.SetRenderTarget(null);
     }
 
@@ -41,7 +40,8 @@ public class LightBakeTest : MonoBehaviour {
         Vector4 lightAParam = new Vector4(light.transform.position.x, light.transform.position.y, light.transform.position.z, light.range);
         Vector4 lightIntensity = new Vector4(light.intensity, 0.0f, 0.0f, 0.0f);
 
-       Graphics.SetRenderTarget(target);
+        Graphics.SetRenderTarget(target);
+        GL.Clear(true, true, new Color(0, 0, 0, 0));
        bakeMaterial.SetVector("_LightA", lightAParam);
        bakeMaterial.SetVector("_LightParam", lightIntensity);
         bakeMaterial.SetPass(0);

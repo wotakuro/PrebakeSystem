@@ -12,6 +12,7 @@
         ZWrite Off
 		Cull Off
 		ZTest Always
+		Blend One One
 		LOD 100
 
 		Pass
