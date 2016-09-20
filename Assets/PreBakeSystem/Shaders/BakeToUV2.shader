@@ -4,6 +4,7 @@
 	{
 		_LightA("LightA", Vector) = (0.0,0.0,0.0,0.0)
 		_LightB("LightB", Vector) = (0.0,0.0,0.0,0.0)
+		_LightC("LightC", Vector) = (0.0,0.0,0.0,0.0)
 		_LightParam("LightParam", Vector) = (0.0,0.0,0.0,0.0)
 	}
 	SubShader
@@ -44,6 +45,7 @@
 			float4 _MainTex_ST;
 			float4 _LightA;
 			float4 _LightB;
+			float4 _LightC;
 			float4 _LightParam;
 
 			fixed calculateLightEffect(float3 lightPos,float3 vert,float3 normal,float lightDist,float lightIdentity){
@@ -75,8 +77,8 @@
 				float4 addCol = float4(0,0,0,0);
 				
 				addCol.r = calculateLightEffect( _LightA.xyz , i.position.xyz , i.normal, _LightA.w , _LightParam.x );
-				addCol.g = 0.0;
-				addCol.b = 0.0;
+				addCol.g = calculateLightEffect( _LightB.xyz , i.position.xyz , i.normal, _LightB.w , _LightParam.y );
+				addCol.b = calculateLightEffect( _LightC.xyz , i.position.xyz , i.normal, _LightC.w , _LightParam.z );
 				addCol.a = 1.0;
 
 				//addCol = i.color;
