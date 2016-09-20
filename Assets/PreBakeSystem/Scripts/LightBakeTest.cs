@@ -16,13 +16,11 @@ public class LightBakeTest : MonoBehaviour {
     {
         target = new RenderTexture(512, 512, 0 ,RenderTextureFormat.ARGB32);
         target.Create();
-        Graphics.SetRenderTarget(target);
-        Graphics.SetRenderTarget(null);
     }
 
     void Start()
     {
-        var mat = new Material(Shader.Find("Unlit/Texture"));
+        var mat = new Material(Shader.Find("Sprites/Default"));
         mat.mainTexture = target;
         changeTextureTarget.material = mat;
 

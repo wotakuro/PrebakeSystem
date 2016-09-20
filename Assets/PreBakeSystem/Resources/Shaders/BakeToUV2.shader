@@ -64,7 +64,11 @@
 				float4 position = mul (_Object2World, v.vertex);
 				
 				// UV2に書き込みます
+				#if UNITY_UV_STARTS_AT_TOP
 				o.vertex = float4( (v.writeToUv.x -0.5 )  , (-v.writeToUv.y +0.5)  , 0.0 , 0.5 );
+				#else
+				o.vertex = float4( (v.writeToUv.x -0.5 )  , (v.writeToUv.y -0.5)  , 0.0 , 0.5 );
+				#endif
 				o.position = position;
 
 	            o.normal = nvec.xyz;
