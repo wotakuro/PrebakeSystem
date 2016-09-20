@@ -4,6 +4,7 @@ using System.Collections;
 public class LightBakeTest : MonoBehaviour {
     RenderTexture target;
 
+    public TextMesh text;
     public Light light;
     public Material bakeMaterial;
     public Mesh mesh;
@@ -37,6 +38,12 @@ public class LightBakeTest : MonoBehaviour {
             }
             targetSkinned.materials = materials;
         }
+
+        if (mesh.isReadable)
+        {
+            text.text = "Uv1:" + (mesh.uv.Length) + " Uv2:" + (mesh.uv2.Length) + "\nuv3:" + (mesh.uv3.Length) +
+                " Uv4:" + (mesh.uv4.Length);
+        }
     }
 
 
@@ -45,9 +52,11 @@ public class LightBakeTest : MonoBehaviour {
         Vector4 lightAParam = new Vector4(light.transform.position.x, light.transform.position.y, light.transform.position.z, light.range);
         Vector4 lightIntensity = new Vector4(light.intensity, 0.0f, 0.0f, 0.0f);
 
-        Shader.EnableKeyword("WRITE_TO_UV2");
 
-        Graphics.SetRenderTarget(target);
+        bakeMaterial.DisableKeyword("WRITE_TO_UV1");
+        bakeMaterial.EnableKeyword("WRITE_TO_UV2");
+
+        Graphics.SetRenderTarget(target.colorBuffer, target.depthBuffer);
         GL.Clear(true, true, new Color(0, 0, 0, 0));
         bakeMaterial.SetVector("_LightA", lightAParam);
         bakeMaterial.SetVector("_LightParam", lightIntensity);
