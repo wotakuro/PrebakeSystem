@@ -1,4 +1,4 @@
-﻿Shader "LightBake/BakeToUV2"
+﻿Shader "LightBake/BakePointLightRGB"
 {
 	Properties
 	{
@@ -16,10 +16,12 @@
 		Blend One One
 		LOD 100
 
+
 		Pass
 		{
 
 			CGPROGRAM
+			#pragma shader_feature WRITE_TO_UV1 WRITE_TO_UV2 WRITE_TO_UV3 WRITE_TO_UV4
 			#pragma vertex vert
 			#pragma fragment frag
 			// make fog work
@@ -29,8 +31,19 @@
 			struct appdata
 			{
 				float4 vertex : POSITION;
-				float2 texcoord : TEXCOORD0;
+
+				#ifdef WRITE_TO_UV1
+				float2 writeToUv : TEXCOORD0;
+				#elif WRITE_TO_UV2
 				float2 writeToUv : TEXCOORD1;
+				#elif WRITE_TO_UV3
+				float2 writeToUv : TEXCOORD2;
+				#elif WRITE_TO_UV4
+				float2 writeToUv : TEXCOORD3;
+				#else
+				float2 writeToUv : TEXCOORD1;
+				#endif
+
 	            float3 normal : NORMAL;
 	            fixed4 color : COLOR;
 			};
@@ -63,7 +76,7 @@
 				float4 nvec   = mul (_Object2World, float4(v.normal,0.0) );
 				float4 position = mul (_Object2World, v.vertex);
 				
-				// UV2に書き込みます
+				// UVに書き込みます
 				#if UNITY_UV_STARTS_AT_TOP
 				o.vertex = float4( (v.writeToUv.x -0.5 )  , (-v.writeToUv.y +0.5)  , 0.0 , 0.5 );
 				#else
