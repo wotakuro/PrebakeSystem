@@ -17,6 +17,9 @@ public class LightBakeTest : MonoBehaviour {
     {
         target = new RenderTexture(512, 512, 0 ,RenderTextureFormat.ARGB32);
         target.Create();
+        Graphics.SetRenderTarget(target.colorBuffer, target.depthBuffer);
+        GL.Clear(true, true, new Color(0, 0, 0, 0));
+        Graphics.SetRenderTarget(null);
     }
 
     void Start()
@@ -50,7 +53,7 @@ public class LightBakeTest : MonoBehaviour {
     void OnPostRender()
     {
         Vector4 lightAParam = new Vector4(light.transform.position.x, light.transform.position.y, light.transform.position.z, light.range);
-        Vector4 lightIntensity = new Vector4(light.intensity, 0.0f, 0.0f, 0.0f);
+        Vector4 lightIntensity = new Vector4(light.intensity, 0.0f, 0.0f, light.intensity);
 
 
         bakeMaterial.DisableKeyword("WRITE_TO_UV1");
@@ -58,8 +61,9 @@ public class LightBakeTest : MonoBehaviour {
 
         Graphics.SetRenderTarget(target.colorBuffer, target.depthBuffer);
         GL.Clear(true, true, new Color(0, 0, 0, 0));
-        bakeMaterial.SetVector("_LightA", lightAParam);
+        bakeMaterial.SetVector("_Light0", lightAParam);
         bakeMaterial.SetVector("_LightParam", lightIntensity);
+        bakeMaterial.SetVector("_Light3", lightAParam);
         bakeMaterial.SetPass(0);
         Matrix4x4 matrix = Matrix4x4.TRS(positionInfo.position, positionInfo.rotation, positionInfo.lossyScale);
         Graphics.DrawMeshNow(mesh, matrix);

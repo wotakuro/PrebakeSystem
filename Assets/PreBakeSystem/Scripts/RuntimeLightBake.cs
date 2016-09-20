@@ -8,6 +8,9 @@ namespace RuntimeLightBake
     /// </summary>
     public class RuntimeLightBake 
     {
+        /// <summary>
+        /// use uv
+        /// </summary>
         public enum EUvSelect
         {
             Unknown,
@@ -16,9 +19,19 @@ namespace RuntimeLightBake
             Uv3,
             Uv4,
         }
+        /// <summary>
+        /// Shader keywords
+        /// </summary>
         private readonly string[] ShaderKeyWords = new string[] { "WRITE_TO_UV1", "WRITE_TO_UV2", "WRITE_TO_UV3", "WRITE_TO_UV4" };
 
+        /// <summary>
+        /// rendering target
+        /// </summary>
         private RenderTexture renderTarget;
+
+        /// <summary>
+        /// material to render light texture
+        /// </summary>
         private Material drawMaterial;
 
         /// <summary>
@@ -31,30 +44,70 @@ namespace RuntimeLightBake
         /// </summary>
         private int shaderIdLightParam;
 
+        /// <summary>
+        /// light positions
+        /// </summary>
         private Vector4[] lightPositions = new Vector4[3];
+        /// <summary>
+        /// light parameters
+        /// </summary>
         private Vector4 lightParameter;
 
         /// <summary>
         /// constructor
         /// </summary>
-        public RuntimeLightBake()
+        public RuntimeLightBake(int width , int height)
         {
             // Shader Id Get
-            this.shaderIdLightPos[0] = Shader.PropertyToID("_LightA");
-            this.shaderIdLightPos[1] = Shader.PropertyToID("_LightB");
-            this.shaderIdLightPos[2] = Shader.PropertyToID("_LightC");
+            this.shaderIdLightPos[0] = Shader.PropertyToID("_Light0");
+            this.shaderIdLightPos[1] = Shader.PropertyToID("_Light1");
+            this.shaderIdLightPos[2] = Shader.PropertyToID("_Light2");
             this.shaderIdLightParam = Shader.PropertyToID("_LightParam");
 
             // RenderingTexutre Create
-            this.renderTarget = new RenderTexture(512, 512, 0, RenderTextureFormat.ARGB32);
+            this.renderTarget = new RenderTexture(width,height, 0, RenderTextureFormat.ARGB32);
             this.renderTarget.Create();
         }
 
+        /// <summary>
+        /// release render Texture
+        /// </summary>
+        public void Release()
+        {
+            if (this.renderTarget != null)
+            {
+                this.renderTarget.Release();
+            }
+            this.renderTarget = null;
+        }
+
+        /// <summary>
+        /// return Render target texture
+        /// </summary>
+        /// <returns>return render targetTexture</returns>
         public RenderTexture GetRenderTargetTexture()
         {
             return this.renderTarget;
         }
 
+        /// <summary>
+        /// Clear Rendering Target
+        /// </summary>
+        public void ClearRenderTarget()
+        {
+            Graphics.SetRenderTarget(this.renderTarget);
+            GL.Clear(true, true, new Color(0, 0, 0, 0));
+            Graphics.SetRenderTarget(null);
+        }
+
+        /// <summary>
+        /// Rendering light
+        /// </summary>
+        /// <param name="mesh">mesh</param>
+        /// <param name="uvSelect">use uv</param>
+        /// <param name="pos">position</param>
+        /// <param name="rot">rotation</param>
+        /// <param name="size">size</param>
         public void RenderingToTarget(Mesh mesh,EUvSelect uvSelect, Vector3 pos, Quaternion rot, Vector3 size)
         {
             Matrix4x4 matrix = Matrix4x4.TRS(pos, rot, size );
@@ -73,9 +126,17 @@ namespace RuntimeLightBake
             this.RenderingToTarget(mesh, uvSelect, ref matrix);
         }
 
+        /// <summary>
+        /// Rendering light
+        /// </summary>
+        /// <param name="mesh">set mesh</param>
+        /// <param name="uvSelect">use uv</param>
+        /// <param name="matrix">drawing matrix</param>
         public void RenderingToTarget(Mesh mesh, EUvSelect uvSelect, ref Matrix4x4 matrix)
         {
             this.SetShaderKeyWordToMaterial(uvSelect);
+            this.SetLightParameterToMaterial();
+            // rendering
             Graphics.SetRenderTarget(renderTarget);
             this.drawMaterial.SetPass(0);
             Graphics.DrawMeshNow(mesh, matrix);

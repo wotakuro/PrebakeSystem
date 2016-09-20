@@ -2,9 +2,10 @@
 {
 	Properties
 	{
-		_LightA("LightA", Vector) = (0.0,0.0,0.0,0.0)
-		_LightB("LightB", Vector) = (0.0,0.0,0.0,0.0)
-		_LightC("LightC", Vector) = (0.0,0.0,0.0,0.0)
+		_Light0("Light 0", Vector) = (0.0,0.0,0.0,0.0)
+		_Light1("Light 1", Vector) = (0.0,0.0,0.0,0.0)
+		_Light2("Light 2", Vector) = (0.0,0.0,0.0,0.0)
+		_Light2("Light 3", Vector) = (0.0,0.0,0.0,0.0)
 		_LightParam("LightParam", Vector) = (0.0,0.0,0.0,0.0)
 	}
 	SubShader
@@ -56,9 +57,10 @@
 			};
 
 			float4 _MainTex_ST;
-			float4 _LightA;
-			float4 _LightB;
-			float4 _LightC;
+			float4 _Light0;
+			float4 _Light1;
+			float4 _Light2;
+			float4 _Light3;
 			float4 _LightParam;
 
 			fixed calculateLightEffect(float3 lightPos,float3 vert,float3 normal,float lightDist,float lightIdentity){
@@ -93,10 +95,10 @@
 				// sample the texture
 				float4 addCol = float4(0,0,0,0);
 				
-				addCol.r = calculateLightEffect( _LightA.xyz , i.position.xyz , i.normal, _LightA.w , _LightParam.x );
-				addCol.g = calculateLightEffect( _LightB.xyz , i.position.xyz , i.normal, _LightB.w , _LightParam.y );
-				addCol.b = calculateLightEffect( _LightC.xyz , i.position.xyz , i.normal, _LightC.w , _LightParam.z );
-				addCol.a = 1.0;
+				addCol.r = calculateLightEffect( _Light0.xyz , i.position.xyz , i.normal, _Light0.w , _LightParam.x );
+				addCol.g = calculateLightEffect( _Light1.xyz , i.position.xyz , i.normal, _Light1.w , _LightParam.y );
+				addCol.b = calculateLightEffect( _Light2.xyz , i.position.xyz , i.normal, _Light2.w , _LightParam.z );
+				addCol.a = calculateLightEffect( _Light3.xyz , i.position.xyz , i.normal, _Light3.w , _LightParam.w );
 
 				//addCol = i.color;
 				return addCol;
