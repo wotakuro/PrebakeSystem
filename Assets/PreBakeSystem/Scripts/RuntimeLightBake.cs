@@ -162,10 +162,13 @@ namespace RuntimeLightBake
                     this.lightParameter.x = intensity;
                     break;
                 case 1:
-                    this.lightParameter.x = intensity;
+                    this.lightParameter.y = intensity;
                     break;
                 case 2:
-                    this.lightParameter.x = intensity;
+                    this.lightParameter.z = intensity;
+                    break;
+                case 3:
+                    this.lightParameter.w = intensity;
                     break;
             }
         }
