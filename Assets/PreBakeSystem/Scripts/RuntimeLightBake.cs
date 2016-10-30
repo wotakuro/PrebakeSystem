@@ -67,6 +67,9 @@ namespace RuntimeLightBake
             // RenderingTexutre Create
             this.renderTarget = new RenderTexture(width,height, 0, RenderTextureFormat.ARGB32);
             this.renderTarget.Create();
+
+            // Material Create
+            this.drawMaterial = new Material(Shader.Find("LightBake/BakePointLightRGB"));
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ public class LightBakeTest : MonoBehaviour {
 
     public MeshRenderer changeTextureTarget;
     public SkinnedMeshRenderer targetSkinned;
+    public Texture2D originTexture;
 
     void Awake()
     {
@@ -30,8 +31,9 @@ public class LightBakeTest : MonoBehaviour {
 
         if (targetSkinned != null && targetSkinned.material != null)
         {
-            var mat2 = new Material(Shader.Find("Unlit/Uv2Test"));
-            mat2.mainTexture = target;
+            var mat2 = new Material(Shader.Find("Prebake/Diffuse"));
+            mat2.mainTexture = originTexture;
+            mat2.SetTexture("_LightTexture", target);
             targetSkinned.material = mat2;
 
             var materials = new Material[targetSkinned.materials.Length];
